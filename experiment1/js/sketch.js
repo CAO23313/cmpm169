@@ -1,3 +1,7 @@
+// Citation: Professor provide artwork page (http://www.generative-gestaltung.de/2/)
+// Citation: ChatGPT help me to modify and understand the code.
+
+
 var tileCount = 8; // Fixed tile count
 var moduleColor;
 var moduleAlpha = 180;
