@@ -1,3 +1,8 @@
+// Citation: Professor provide artwork page (http://www.generative-gestaltung.de/2/)
+// Citation: Synth in Just Intonation by Richard Bourne (https://openprocessing.org/sketch/1671573)
+// Citation: ChatGPT help me to modify and understand the code.
+// Citation: Deepseek help me to modify and understand the code.
+
 let synth, bass, noise, pad, delay, reverb;
 let arpeggio = ["C4", "E4", "G4", "B4", "C5", "B4", "G4", "E4"]; // Arpeggiated sequence
 let bassNotes = ["C2", "G2", "A2", "F2"]; // Simple bass progression
