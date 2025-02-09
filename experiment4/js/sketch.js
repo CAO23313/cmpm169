@@ -1,3 +1,8 @@
+// Citation: The provided artwork page from professor: https://openprocessing.org/sketch/1754173
+// Citation: Star Field Hyperdrive Light Speed Effect by Barney Codes: https://www.youtube.com/watch?v=p0I5bNVcYP8
+// Citation: ChatGPT help me to modify and understand the code.
+// Citation: Deepseek help me to modify and understand the code.
+
 let stars = [];
 let planet;
 let hyperdrive = false;
