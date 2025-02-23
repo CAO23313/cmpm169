@@ -1,79 +1,92 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// Citation: The slide about different charts from course lecture
+// Citation: My previous experimental 4 about the sound art
+// Citation: Free sound from Uppbeat: https://uppbeat.io/sfx/category/hospital/ecg-machine
+// Citation: ZZZ Code AI help me to debugging: https://zzzcode.ai
+// Citation: ChatGPT help me to modify and understand the code.
+// Citation: Deepseek help me to modify and understand the code.
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+let mic;
+let waves = [];
+let threshold = 0.02; // Minimum sound level to trigger
+let lastSoundTime = 0;
+let cooldown = 1500; // 1.5 seconds cooldown
+let sound1;
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
-
-// Globals
-let myInstance;
-let canvasContainer;
-var centerHorz, centerVert;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
+function preload() {
+  sound1 = loadSound("sound1.mp3"); // Ensure "sound1.mp3" is in the correct directory
 }
 
-function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
-  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
-  console.log("Resizing...");
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
-  // redrawCanvas(); // Redraw everything based on new size
-}
-
-// setup() function is called once when the program starts
 function setup() {
-  // place our canvas, making it fit our container
-  canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-  canvas.parent("canvas-container");
-  // resize canvas is the page is resized
+  createCanvas(600, 300);
+  noFill();
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
-
-  $(window).resize(function() {
-    resizeScreen();
-  });
-  resizeScreen();
+  // Start microphone input
+  mic = new p5.AudioIn();
+  mic.start();
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+  let level = mic.getLevel();
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+  // Create a pulsing background effect using lerpColor for the ECG vibes
+  let bgColor = lerpColor(color(0), color(0, 100, 0), constrain(level * 5, 0, 1));
+  background(bgColor);
 
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  // Draw ECG grid
+  drawGrid();
+
+  // Map the level to a color range from green (low) to red (high)
+  let r = map(level, 0, 1, 0, 255);
+  let g = map(level, 0, 1, 255, 0);
+  stroke(r, g, 0);
+  strokeWeight(2);
+
+  // Play sound if the sound level is above the threshold and cooldown has passed
+  if (level > threshold && millis() - lastSoundTime > cooldown) {
+    sound1.play();
+    lastSoundTime = millis();
+  }
+
+  // Only add to the wave if the sound level is above the threshold
+  if (level > threshold) {
+    let waveHeight = map(level, 0, 1, 5, height / 2);
+    waves.push(waveHeight);
+  } else {
+    waves.push(0); // Keep the wave steady when no sound
+  }
+
+  if (waves.length > width) {
+    waves.shift(); // Keep the wave flowing smoothly
+  }
+
+  // Draw wave in ECG monitor style
+  if (max(waves) > 0) {
+    beginShape();
+    for (let i = 0; i < waves.length; i++) {
+      let y = height / 2 + sin(i * 0.2) * waves[i];
+      vertex(i, y);
+    }
+    endShape();
+  }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+// Function to draw the ECG grid
+function drawGrid() {
+  stroke(0, 255, 0, 50); // Light green for grid
+  strokeWeight(1);
+
+  // Draw vertical grid lines (every 50 pixels)
+  for (let i = 50; i < width; i += 50) {
+    line(i, 0, i, height);
+  }
+
+  // Draw horizontal grid lines (every 50 pixels)
+  for (let i = 50; i < height; i += 50) {
+    line(0, i, width, i);
+  }
 }
+
+
+
+
+
